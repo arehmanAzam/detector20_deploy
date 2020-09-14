@@ -57,10 +57,10 @@ put it in checkpoints folder
 
 Also rename the model name in checkpoint file accoding to the epoch number and files
 For example
+
 For files 
-yolov3_train_11.tf.data-00000-of-00002
-yolov3_train_11.tf.index
-yolov3_train_11.tf.data-00001-of-00002
+
+#### yolov3_train_11.tf.data-00000-of-00002, yolov3_train_11.tf.index, yolov3_train_11.tf.data-00001-of-00002
 
 Specify 
 #### yolov3_train_11.tf
