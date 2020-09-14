@@ -40,7 +40,13 @@ For Docker installation instructions follow:
 ```
 ### Copy model files to checkpoint directory
 
--For now the checkpoint files are larger and can't be uploaded in git. Please download it from following link and put it in checkpoints folder
+-For now the checkpoint files are larger and can't be uploaded in git. Please download it from following link 
+```
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1I9ugHr_dnQD00zMeOKgW26BNqXi6OEwn' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1I9ugHr_dnQD00zMeOKgW26BNqXi6OEwn" -O yolov3_train_11.tf.zip && rm -rf /tmp/cookies.txt
+```
+
+
+put it in checkpoints folder
 
 ```
 ->flask_app
