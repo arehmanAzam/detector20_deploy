@@ -30,11 +30,11 @@ For Docker installation instructions follow:
 |   |................
 |   |................
 │   ├── wsgi.py
-│   └── Dockerfile
+│   └── Dockerfile (file)
 ├── nginx
 │   ├── nginx.conf          
 │   ├── project.conf
-│   └── Dockerfile
+│   └── Dockerfile (file
 ├── docker-compose.yml
 └── run_docker.sh
 ```
@@ -45,8 +45,8 @@ For Docker installation instructions follow:
 ```
 ->flask_app
 -->yolov3_tf2
----->checkpoints
-     |-checkpoint
+   |->checkpoints
+     |->checkpoint (file)
 ```
 
 Also rename the model name in checkpoint file
