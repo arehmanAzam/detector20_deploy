@@ -1,1 +1,0 @@
-# detector20_deploy
