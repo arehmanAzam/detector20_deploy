@@ -94,4 +94,4 @@ json={
 “Exception” : None/”Image not received correctly”/….etc
 }
 ```
-For multiple classes and roi's are not sent. We are only sending maximum score's class and roi.
+For multiple classes,score and roi's are for now not sent. We are only sending maximum score's class and roi.
