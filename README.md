@@ -64,3 +64,34 @@ For files
 
 Specify 
 #### yolov3_train_11.tf
+
+
+## Connection String
+
+The connection string is :
+http://ec2-3-137-156-196.us-east-2.compute.amazonaws.com/
+
+
+Also the input is required to be in the form : 
+```
+json={"Image": encoded_string.decode()
+     ,"time_sent":time.strftime('%Y-%m-%d %H:%M:%S')
+     ,"Image_resolution": "1280x800"
+     ,"bytes_sent": 2334})
+```
+
+Whereas the ouput will be in the form:
+```
+json={
+"first_class": "M2", 
+"first_roi": "529, 555, 2923, 2512",
+“first_score": 0.6485040783882141, 
+"other_classes": "None", 
+“other_rois": "None"
+"other_scores": 0
+‘time_sent’ : YYYY-MM-DD hh:mm:ss 
+“Success”: True/ False
+“Exception” : None/”Image not received correctly”/….etc
+}
+```
+For multiple classes and roi's are not sent. We are only sending maximum score's class and roi.
