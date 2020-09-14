@@ -38,3 +38,12 @@ For Docker installation instructions follow:
 ├── docker-compose.yml
 └── run_docker.sh
 ```
+### Copy model files to checkpoint directory
+
+-For now the checkpoint files are larger and can't be uploaded in git. Please download it from following link and put it in checkpoints folder
+->flask_app
+-->yolov3_tf2
+---->checkpoints
+     |-checkpoint
+
+Also rename the model name in checkpoint file
