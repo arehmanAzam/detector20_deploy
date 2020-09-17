@@ -1,4 +1,4 @@
-# Template for deploying ML models using Flask + Gunicorn + Nginx inside Docker
+# Deploying detector20 using Flask + Gunicorn + Nginx inside Docker
 
 ## Running the solution
 
@@ -17,7 +17,6 @@ For Docker installation instructions follow:
 
 ## Understanding the solution
 
-— The detailed way: check [my Medium post](https://towardsdatascience.com/how-to-deploy-ml-models-using-flask-gunicorn-nginx-docker-9b32055b3d0) regarding this solution. 
 
 — The fast way: the project is structured as follows: Flask app and WSGI entry point are localed in flask_app directory. Nginx and project configuration files are located in nginx directory. Both directories contain Docker files that are connected using docker_compose.yml file in the main directory. 
   
@@ -25,13 +24,74 @@ For Docker installation instructions follow:
 ```
 .
 ├── flask_app 
-│   ├── app.py          
+│   ├── yolov3_tf2
+|      |___Deploy
+|          |___Deploy.py
+|   |................
+|   |................
 │   ├── wsgi.py
-│   └── Dockerfile
+│   └── Dockerfile (file)
 ├── nginx
 │   ├── nginx.conf          
 │   ├── project.conf
-│   └── Dockerfile
+│   └── Dockerfile (file
 ├── docker-compose.yml
 └── run_docker.sh
 ```
+### Copy model files to checkpoint directory
+
+-For now the checkpoint files are larger and can't be uploaded in git. Please download it from following link 
+```
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1I9ugHr_dnQD00zMeOKgW26BNqXi6OEwn' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1I9ugHr_dnQD00zMeOKgW26BNqXi6OEwn" -O yolov3_train_11.tf.zip && rm -rf /tmp/cookies.txt
+```
+
+
+put it in checkpoints folder
+
+```
+->flask_app
+-->yolov3_tf2
+   |->checkpoints
+     |->checkpoint (file)
+```
+
+Also rename the model name in checkpoint file accoding to the epoch number and files
+For example
+
+For files 
+
+#### yolov3_train_11.tf.data-00000-of-00002, yolov3_train_11.tf.index, yolov3_train_11.tf.data-00001-of-00002
+
+Specify 
+#### yolov3_train_11.tf
+
+
+## Connection String
+
+The connection string is :
+http://ec2-3-137-156-196.us-east-2.compute.amazonaws.com/
+
+
+Also the input is required to be in the form : 
+```
+json={"Image": encoded_string.decode()
+     ,"time_sent":time.strftime('%Y-%m-%d %H:%M:%S')
+     ,"Image_resolution": "1280x800"
+     ,"bytes_sent": 2334})
+```
+
+Whereas the ouput will be in the form:
+```
+json={
+"first_class": "M2", 
+"first_roi": "529, 555, 2923, 2512",
+“first_score": 0.6485040783882141, 
+"other_classes": "None", 
+“other_rois": "None"
+"other_scores": 0
+‘time_sent’ : YYYY-MM-DD hh:mm:ss 
+“Success”: True/ False
+“Exception” : None/”Image not received correctly”/….etc
+}
+```
+For multiple classes,score and roi's are for now not sent. We are only sending maximum score's class and roi.
