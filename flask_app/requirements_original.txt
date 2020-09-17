@@ -1,5 +1,6 @@
 flask
 gunicorn
+webcolors==1.11.1
 absl-py==0.10.0
 astor==0.8.1
 cachetools==4.1.1
