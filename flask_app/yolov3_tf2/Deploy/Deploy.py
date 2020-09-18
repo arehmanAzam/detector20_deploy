@@ -186,7 +186,9 @@ def predictions():
                 _json_response['time_sent'] = time.strftime('%Y-%m-%d %H:%M:%S')
                 _json_response['Success']=True
                 _json_response['Exception']='None'
-                logging.info(_json_response)
+                print(_json_response)
+                cv2.imwrite(filename=os.getcwd()+'/yolov3_tf2/logs/'+str(_json_response['time_sent'])+max_class_name+'.jpg'
+                            ,img=img)
             return json.dumps(_json_response, sort_keys=True)
     except Exception as e:
         _json_response = OrderedDict()
