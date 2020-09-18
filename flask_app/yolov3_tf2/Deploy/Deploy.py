@@ -21,13 +21,13 @@ import json
 import webcolors
 
 classes=os.getcwd()+'/yolov3_tf2/'+'data/voc2012.names'
-weights=os.getcwd()+'/yolov3_tf2/'+'/checkpoints/yolov3_train_7.tf'
+weights=os.getcwd()+'/yolov3_tf2/'+'/checkpoints/yolov3_train_44.tf'
 tiny=False,
 size= 416
 image= './data/girl.png'
 tfrecord= None
 output='./output.jpg'
-num_classes= 4
+num_classes= 9
 class_names=[]
 yolo=None
 first_run_flag=True
@@ -36,7 +36,12 @@ class_mappings={
         'rayban01':'Rayban Wayfarer',
         'Oo9343':'Oakley Men\'s Oo9343 M2 Frame Xl Shield Sunglasses',
         'ck01': 'CK One Eau De Toilette',
-        'oakleySun2':'Oakley Sunglasses 2'}
+        'oakleySun2':'Oakley Sunglasses 2',
+        'dhl_envelope' : 'DHL Envelope as per the demo kits',
+        'poloshirt': 'Polo Shirt x 3',
+        'hoodie': 'Hoodie x 2',
+        'listerine': 'Listerine',
+        'Everydrop': 'Filter cartridge'}
 # flags = tf.compat.v1.flags
 
 def initializations():
@@ -75,12 +80,8 @@ def get_colour_name(requested_colour):
         closest_name = closest_colour(requested_colour)
         actual_name = None
     return actual_name, closest_name
-def color_find(np_im,boxes,max_index):
-    img = cv2.cvtColor(np_im, cv2.COLOR_RGB2BGR)
-    wh = np.flip(img.shape[0:2])
+def color_find(img,x1y1,x2y2):
 
-    x1y1 = tuple((np.array(boxes[0][0:2]) * wh).astype(np.int32))
-    x2y2 = tuple((np.array(boxes[0][2:4]) * wh).astype(np.int32))
     ROI = img[x1y1[1]:x2y2[1], x1y1[0]:x2y2[0]]
     histb = cv2.calcHist([ROI[0]], [0], None, [256], [0, 256])
     histg = cv2.calcHist([ROI[1]], [0], None, [256], [0, 256])
@@ -136,37 +137,41 @@ def predictions():
                 logging.info('time: {}'.format(t2 - t1))
 
                 logging.info('detections:')
-                counter=0
-                for i in range(nums[0]):
-                    logging.info('\t{}, {}, {}'.format(class_names[int(classes[0][i])],
-                                                       np.array(scores[0][i]),
-                                                       np.array(boxes[0][i])))
-                    counter+=1
+                # counter=0
+                # for i in range(nums[0]):
+                #     logging.info('\t{}, {}, {}'.format(class_names[int(classes[0][i])],
+                #                                        np.array(scores[0][i]),
+                #                                        np.array(boxes[0][i])))
+                #     counter+=1
                 proto_tensor = tf.make_tensor_proto(scores[0])
                 scores=tf.make_ndarray(proto_tensor)
                 proto_tensor = tf.make_tensor_proto(boxes[0])
                 boxes = tf.make_ndarray(proto_tensor)
                 proto_tensor = tf.make_tensor_proto(classes[0])
                 classes = tf.make_ndarray(proto_tensor)
+                img = cv2.cvtColor(np_im, cv2.COLOR_RGB2BGR)
+                wh = np.flip(img.shape[0:2])
                 if range(nums[0]) is not None :
                     if range(nums[0]).stop > 0:
                         max_result_roi = boxes[scores.argmax()]
-                        roi=np.array(boxes[0])
-                        max_score = int(scores.argmax())
+                        max_score = scores[scores.argmax()]
                         max_class_name = class_mappings[class_names[int(classes[scores.argmax()])]]
-                        max_result_roi_string = ', '.join(map(str, max_result_roi))
-                        closest_color=color_find(np_im,boxes,scores.argmax())
-
+                        x1y1 = tuple((np.array(max_result_roi[0:2]) * wh).astype(np.int32))
+                        x2y2 = tuple((np.array(max_result_roi[2:4]) * wh).astype(np.int32))
+                        closest_color=color_find(img,x1y1,x2y2)
+                        max_result_roi_string = ', '.join(map(str, x1y1+x2y2))
                         # ROI = np_im[top:bottom, left:right]
                     if range(nums[0]).stop > 1:
                         second_max_score = ''
                         second_max_class_name = ''
                         second_max_roi_string = ''
                         for i in range(nums[0]):
-                            if i!=0:
-                                second_max_score+=str(np.array(scores[0][i]))+', '
-                                second_max_class_name += class_mappings[str(class_names[int(classes[0][i])])] + ', '
-                                second_max_roi_string += str(np.array(boxes[i])) + ', '
+                            if i!=int(scores.argmax()):
+                                second_max_score+=str(np.array(scores[i]))+', '
+                                second_max_class_name += class_mappings[class_names[int(classes[i])]] + ', '
+                                x1y1 = tuple((np.array(boxes[i][0:2]) * wh).astype(np.int32))
+                                x2y2 = tuple((np.array(boxes[i][2:4]) * wh).astype(np.int32))
+                                second_max_roi_string += '['+', '.join(map(str, x1y1+x2y2)) + '], '
                         #Will be coded when classes get to increase
                 _json_response = OrderedDict()
                 _json_response['first_score'] = max_score
