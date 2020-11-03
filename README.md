@@ -66,12 +66,6 @@ Specify
 #### yolov3_train_11.tf
 
 
-## Connection String
-
-The connection string is :
-http://ec2-3-137-156-196.us-east-2.compute.amazonaws.com/
-
-
 Also the input is required to be in the form : 
 ```
 json={"Image": encoded_string.decode()
